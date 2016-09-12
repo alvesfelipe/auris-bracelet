@@ -1,1 +1,1 @@
-The code below has commands to arduino read txt files where these files has commands to the motors are activated in tune with the music.
+The code below has commands to arduino read .txt files where these files has commands to the motors are activated in tune with the music.

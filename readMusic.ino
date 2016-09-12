@@ -1,7 +1,7 @@
 #include <SD.h>
 
 /*
- * Pin board "Micro Card Adapter" to be connected to the ICSP pin's arduino:
+ Pin board "Micro Card Adapter" to be connected to the ICSP pin's arduino:
  ** vcc - pin 2
  ** MOSI - pin 4
  ** MISO - pin 1
