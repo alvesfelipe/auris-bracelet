@@ -31,12 +31,12 @@ void setup(){
   while(!Serial);
   
   //engine's pins to be used
-  pinMode(9, OUTPUT);
-  //pinMode(3, OUTPUT);
-  //pinMode(4, OUTPUT);
-  //pinMode(5, OUTPUT);
-  //pinMode(6, OUTPUT);
-  //pinMode(7, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
   
   //if not recognize the card reader
   if(!SD.begin(53)){
