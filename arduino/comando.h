@@ -12,8 +12,19 @@ void lerComando(boolean *start, boolean *writeFile, File *fileWrite,File *fileRe
     String comando;
     
     int i = 0;
+    boolean sair = false;
     
-    for(i; recebeComandoInteiro[i] != ' '; i++) comando += recebeComandoInteiro[i];
+    while(!sair){
+      
+      if(recebeComandoInteiro[i] == '\0') sair = true;
+     
+      else if(recebeComandoInteiro[i] == ' ') sair = true;
+      
+      else{
+        comando += recebeComandoInteiro[i];
+        i++;
+      }
+    }
     
     if(comando == "write"){
       
@@ -37,7 +48,7 @@ void lerComando(boolean *start, boolean *writeFile, File *fileWrite,File *fileRe
       else{
         
         *writeFile = true;
-        Serial.println("leu o arquivo");
+        Serial.println("escreveu o arquivo");
       }
     }
     
@@ -62,7 +73,6 @@ void lerComando(boolean *start, boolean *writeFile, File *fileWrite,File *fileRe
         Serial.println("Nao foi possivel ler o arquivo!");
       }else{
         
-        *writeFile = true;
         Serial.println("read");
         
       }
@@ -72,6 +82,8 @@ void lerComando(boolean *start, boolean *writeFile, File *fileWrite,File *fileRe
     else if(comando == "start"){
       
       *start = true;
+      
+      Serial.println("alterou o start");
     }
     
     else{

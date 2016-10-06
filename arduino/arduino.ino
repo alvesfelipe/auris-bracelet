@@ -16,6 +16,7 @@
 #include <SD.h>
 
 #include "comando.h"
+#include "salveFile.h"
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 char server[] = "synd.cricbuzz.com";    // change server to get file from here
@@ -43,26 +44,30 @@ void setup() {
     Serial.println(F("Failed to configure Ethernet using DHCP"));
     // no point in carrying on, so do nothing forevermore:
     // try to congifure using IP address instead of DHCP:
-    Ethernet.begin(mac, ip);
+    Ethernet.begin(mac, Ethernet.localIP());
   }
   // give the Ethernet shield a second to initialize:
-  delay(1000);
+  delay(2000);
   
   Serial.println("connecting...");
+  
+  Serial.println(Ethernet.localIP());
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 80)) {
+  while(!(client.connect(server, 80)));
     Serial.println("connected");
     // Make a HTTP request:
     client.println("GET /j2me/1.0/livematches.xml HTTP/1.1");  // change resource to get here
     client.println("Host: synd.cricbuzz.com");                 // change resource host here
     client.println("Connection: close");
     client.println();
-  }
-  else {
+  //}
+  /*else {
     // didn't get a connection to the server:
     Serial.println("connection failed");
-  }
+  }*/
+  
+  saving(NULL, &client, &theFile);
   
 }
 
@@ -81,14 +86,17 @@ void loop() {
   //salvar o arquivo
   if(writeFile){
     
-    saving(&fileWrite);
-    
+    //saving(&fileWrite);
+    Serial.println("Salvando!!");
     writeFile = false;
   }
   
   
   //tocar musica;
   if(start){
+    
+    
+    Serial.println("Iniciando!!");
     
     start = false;
   }
