@@ -1,7 +1,11 @@
 #ifndef PLAY_H_
 #define PLAY_H_
 
-void startMusic(File *fileRead){
+#include <SD.h>
+
+//File fileRead;
+
+void startMusic(EthernetClient *client){
   
   int endTimeOfThePreviousEngine;
   int sizeParameter;
@@ -11,17 +15,45 @@ void startMusic(File *fileRead){
   long motor, intensity, startTime, finalTime;
   char content[10] = {" "}; 
   
+  File file = SD.open("mus.txt");
+  
+  if(!file){
+    
+    Serial.println("Nao encontrei o arquivo");
+    return;
+  }
+  
   endTimeOfThePreviousEngine = 0;
     
-    while(fileRead->available()){
+    while(file.available()){
 
       sizeParameter = 0;
       restart = 0;
       selection = 0;
-      
+          
       while(selection != 4){
         
-        value = fileRead->read();
+        value = file.read();
+        
+        //stop
+        if(*client){
+          int j = 0;
+          String comando;
+          
+          while(client->available()){
+            
+            comando += client->read();
+            j++;
+            
+            if(j == 4){
+              
+              if(comando == "stop"){
+                client->stop();
+                return;
+              }
+            }
+          }
+        }
         
         if((value == ' ')||(value == '\n')){
         
@@ -66,8 +98,7 @@ void startMusic(File *fileRead){
       endTimeOfThePreviousEngine = finalTime;
       
     }
-    fileRead->close();
-  
+    file.close();  
 }
 
 #endif

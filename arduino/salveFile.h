@@ -1,38 +1,41 @@
 #ifndef SALVEFILE_H_
 #define SALVEFILE_H_
 
-void saving(File *fileWrite, EthernetClient *client, File *theFile){
+void saving(EthernetClient *client){
 
+  //File theFile;
+  
   Serial.println("Creating File");
   
-  *theFile = SD.open("results.xml",FILE_WRITE);
+  File file = SD.open("mus.txt",FILE_WRITE);
   
-  if(!(*theFile)){
+  if(!file){
     
     Serial.println("Could not create file");
-    while(1);
+    return;
   }
   
-  // if there are incoming bytes available
-  // from the server, read them and print them:
-  if (client->available()) {
-    char c = client->read();
-    theFile->print(c);
-  }else{
-    
-    Serial.println("nao available");
-  }
-
-  // if the server's disconnected, stop the client:
-  if (!client->connected()) {
-    Serial.println();
-    Serial.println("disconnecting.");
-    client->stop();
-    theFile->close();
-    Serial.println("Finished writing to file");
-    
-    // do nothing forevermore:
-   // while (true);
-  }
+  Serial.println("criou o arquivo");
+  
+  char c = client->read();
+  //c = client->read();
+  //while(client->connected()){
+    while(c != '*'){
+      
+      //if(c != 152){
+        Serial.write(c);
+        file.print(c);
+        
+        c = client->read();
+      //}else{
+        //c = client->read();
+      //}
+    }
+    //client->read();
+  //}
+  
+  client->print("recebi");
+  file.close();
+  Serial.println("fechei o arquivo");
 }
 #endif

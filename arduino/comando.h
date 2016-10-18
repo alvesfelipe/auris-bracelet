@@ -5,92 +5,55 @@
 #include <Ethernet.h>
 #include <SD.h>
 
-void lerComando(boolean *start, boolean *writeFile, File *fileWrite,File *fileRead){
+#include "play.h"
+#include "salveFile.h"
+
+void lerComando(EthernetClient *client){
   
-    String recebeComandoInteiro = Serial.readString();
+  String comando;
+  int i = 0;
+  
+  while(client->connected()){
     
-    String comando;
+    char c;
     
-    int i = 0;
-    boolean sair = false;
-    
-    while(!sair){
+    while(client->available()){
       
-      if(recebeComandoInteiro[i] == '\0') sair = true;
-     
-      else if(recebeComandoInteiro[i] == ' ') sair = true;
-      
-      else{
-        comando += recebeComandoInteiro[i];
-        i++;
-      }
-    }
-    
-    if(comando == "write"){
-      
-      String nome;
       i++;
-      while(recebeComandoInteiro[i] != '\0'){
+      c = client->read();
+      comando += c;
+      Serial.println(c);
+      
+      if(i == 5){
         
-        nome += recebeComandoInteiro[i];
-        i++;
-      }
+        if(comando == "write"){
+          
+          client->println("comando aceito");
+          saving(client);
+        }else if(comando == "start"){
+          
+          client->stop();
+          startMusic(client);
+          
+          Serial.println("Apagando o arquivo");
+    
+          if(SD.remove("mus.txt")){
       
-      nome += ".txt";
+            Serial.println("Remocao bem sucedida!");
+          }else{
       
-      const char *nomeCompleto = nome.c_str();
-      
-      *fileWrite = SD.open(nomeCompleto, FILE_WRITE);
-      
-      if(!fileWrite){
-       Serial.println("Erro ao criar o arquivo!"); 
-      }
-      else{
+            Serial.println("Nao foi possivel remover!");
+          }
+        }else{
+          
+          Serial.println("Comando nao reconhecido");
+        }
         
-        *writeFile = true;
-        Serial.println("escreveu o arquivo");
+        Serial.println("desconectando o cliente!");
+        client->stop();
       }
     }
-    
-    else if(comando == "read"){
-      
-      String nome;
-      i++;
-      while(recebeComandoInteiro[i] != '\0'){
-        
-        nome += recebeComandoInteiro[i];
-        i++;
-      }
-      
-      nome += ".txt";
-      
-      const char *nomeCompleto = nome.c_str();
-      
-      *fileRead = SD.open(nomeCompleto);
-      
-      if(!(*fileRead)){
-        
-        Serial.println("Nao foi possivel ler o arquivo!");
-      }else{
-        
-        Serial.println("read");
-        
-      }
-    
-    }
-    
-    else if(comando == "start"){
-      
-      *start = true;
-      
-      Serial.println("alterou o start");
-    }
-    
-    else{
-      
-      Serial.println("ERRO! Comando nao reconhecido");
-    }
-    
+  }
 }
 
 #endif
