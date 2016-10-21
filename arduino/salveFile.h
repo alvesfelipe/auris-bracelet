@@ -1,11 +1,13 @@
 #ifndef SALVEFILE_H_
 #define SALVEFILE_H_
 
+#include "apagar.h"
+
 void saving(EthernetClient *client){
 
-  //File theFile;
-  
   Serial.println("Creating File");
+  
+  limparCartao();
   
   File file = SD.open("mus.txt",FILE_WRITE);
   
@@ -18,21 +20,15 @@ void saving(EthernetClient *client){
   Serial.println("criou o arquivo");
   
   char c = client->read();
-  //c = client->read();
-  //while(client->connected()){
-    while(c != '*'){
+  
+    while(c != '*'){ //ponto de parada
       
-      //if(c != 152){
-        Serial.write(c);
-        file.print(c);
+      Serial.write(c);
+      file.print(c);
         
-        c = client->read();
-      //}else{
-        //c = client->read();
-      //}
+      c = client->read();
+      
     }
-    //client->read();
-  //}
   
   client->print("recebi");
   file.close();

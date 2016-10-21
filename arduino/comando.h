@@ -1,10 +1,6 @@
 #ifndef COMANDO_H_
 #define COMANDO_H_
 
-#include <SPI.h>
-#include <Ethernet.h>
-#include <SD.h>
-
 #include "play.h"
 #include "salveFile.h"
 
@@ -22,7 +18,6 @@ void lerComando(EthernetClient *client){
       i++;
       c = client->read();
       comando += c;
-      Serial.println(c);
       
       if(i == 5){
         
@@ -33,17 +28,7 @@ void lerComando(EthernetClient *client){
         }else if(comando == "start"){
           
           client->stop();
-          startMusic(client);
-          
-          Serial.println("Apagando o arquivo");
-    
-          if(SD.remove("mus.txt")){
-      
-            Serial.println("Remocao bem sucedida!");
-          }else{
-      
-            Serial.println("Nao foi possivel remover!");
-          }
+          startMusic();
         }else{
           
           Serial.println("Comando nao reconhecido");

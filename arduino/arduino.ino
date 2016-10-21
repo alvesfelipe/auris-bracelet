@@ -5,9 +5,9 @@
 #include "comando.h"
 #include "salveFile.h"
 #include "play.h"
+#include "apagar.h"
 
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xD0, 0x93 };
-EthernetServer server(3300);
 
 void setup() {
   
@@ -15,6 +15,7 @@ void setup() {
   
   while(!Serial);
   
+  //espero ate o arduino conseguir um ip
   if(Ethernet.begin(mac) == 0){
     
     Serial.println("failed to configure Ethernet using DHCP");
@@ -22,8 +23,10 @@ void setup() {
     while(true);
   }
   
+  //inicio o servidor
   server.begin();
   
+  //mostro o ip do servidor
   Serial.print("Server address: ");
   Serial.println(Ethernet.localIP());
   
@@ -59,18 +62,7 @@ void loop() {
   //Pegar comando
   lerComando(&client);
   
-}
-
-void limparCartao(){
   
-  Serial.println("Apagando o arquivo");
-    
-    if(SD.remove("mus.txt")){
-      
-      Serial.println("Remocao bem sucedida!");
-    }else{
-      
-      Serial.println("Nao foi possivel remover!");
-    }
+  
 }
 

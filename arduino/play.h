@@ -3,9 +3,12 @@
 
 #include <SD.h>
 
-//File fileRead;
+#include "apagar.h"
 
-void startMusic(EthernetClient *client){
+//File fileRead;
+EthernetServer server(3300);
+
+void startMusic(){
   
   int endTimeOfThePreviousEngine;
   int sizeParameter;
@@ -30,30 +33,42 @@ void startMusic(EthernetClient *client){
       sizeParameter = 0;
       restart = 0;
       selection = 0;
+      
+      EthernetClient client_stop = server.available();
+      
+      if(client_stop){
+        
+        int i = 0;
+        String comando;
+        char c;
+        while(client_stop.available()){
+          
+          i++;
+          c = client_stop.read();
+          comando += c;
+          
+          if(i == 4){
+            
+            if(comando == "stop"){
+              
+              while(file.available()) file.read();
+              file.close();
+              limparCartao();
+              client_stop.stop();
+              return;
+            }
+            else{
+              Serial.println("Comando nao reconhecido");
+            }
+          }
+        
+        }
+        client_stop.stop();
+      }
           
       while(selection != 4){
         
         value = file.read();
-        
-        //stop
-        if(*client){
-          int j = 0;
-          String comando;
-          
-          while(client->available()){
-            
-            comando += client->read();
-            j++;
-            
-            if(j == 4){
-              
-              if(comando == "stop"){
-                client->stop();
-                return;
-              }
-            }
-          }
-        }
         
         if((value == ' ')||(value == '\n')){
         
@@ -98,7 +113,8 @@ void startMusic(EthernetClient *client){
       endTimeOfThePreviousEngine = finalTime;
       
     }
-    file.close();  
+    file.close();
+    limparCartao();  
 }
 
 #endif
