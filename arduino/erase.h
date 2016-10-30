@@ -1,5 +1,5 @@
-#ifndef APAGAR_H
-#define APAGAR_H
+#ifndef ERASE_H
+#define ERASE_H
 
 //responsible function to delete the music saved on the card.
 void cleaningCard(){

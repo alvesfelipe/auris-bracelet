@@ -61,7 +61,7 @@ void startMusic(){
               //close the music
               file.close();
               //erase the music
-              cleaningCard()
+              cleaningCard();
               //disconnect the customer
               client_stop.stop();
               //and finalize the function of playing music
