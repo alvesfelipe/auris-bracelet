@@ -28,10 +28,13 @@ void saving(EthernetClient *client){
   while((partMusic != '*')&&(client->available())){
     
     //will only save the music numbers, spaces, line breaks and points.
-    if(((partMusic>='0')&&(partMusic<='9'))||(partMusic == ' ')||(partMusic == '\n')||(partMusic == '.')){
+    if(((partMusic>='0')&&(partMusic<='9'))||
+        (partMusic == ' ')||(partMusic == '\n')||
+        (partMusic == '.')||(partMusic == '&')){
       
       //saved in the file
       file.print(partMusic);
+      Serial.print(partMusic);
     }
     partMusic = client->read();
       

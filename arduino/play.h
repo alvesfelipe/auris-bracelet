@@ -2,8 +2,17 @@
 #define PLAY_H_
 
 #include <SD.h>
+#include "Adafruit_TLC5947.h"
 
 #include "erase.h"
+
+#define NUM_TLC5947 1
+#define DATA 7
+#define CLOCK 6
+#define LATCH 5
+
+Adafruit_TLC5947 tlc = Adafruit_TLC5947(NUM_TLC5947, CLOCK, DATA, LATCH);
+
 
 //variable that says, which is the port that the Arduino is connected.
 EthernetServer server(3300);
@@ -12,12 +21,10 @@ EthernetServer server(3300);
 void startMusic(){
   
   int endTimeOfThePreviousEngine;//variable charge to save the final time the last note
-  int sizeParameter;//variable responsible to assist cleaning the content
-  int restart;//variable responsible to assist cleaning the content
-  int selection;//variable responsible to select where in which the parameters the content will be saved.
   char value;//variable responsible to warn that the music switches over
-  long motor, intensity, startTime, finalTime; //parameters of the note to be played
-  char content[10] = {" "}; //variable responsible for keeping one of music's parameters
+
+  tlc.begin();
+  tlc.write();
   
   //opening the saved music
   File file = SD.open("mus.txt");
@@ -33,11 +40,7 @@ void startMusic(){
   
     //while there note to be played, do ...
     while(file.available()){
-     
-      sizeParameter = 0;
-      restart = 0;
-      selection = 0;
-      
+           
       //if the client connect, while the music is playing
       EthernetClient client_stop = server.available();
       
@@ -73,77 +76,103 @@ void startMusic(){
           }
         
         }
-        client_stop.stop();
+        client_stop.stop(); //Closing the client connection
       }
-          
-      while(selection != 4){
-        
+      
+      String line = ""; //Variable responsible for saving one line at a time from the file
+      
+      value = file.read();
+      
+      while(value != '\n'){
+      
+        line += value;
         value = file.read();
-        
-        if((value == ' ')||(value == '\n')){
-        
-          if(selection == 0){
-            
-            switch(atol(content)){
-              case 0:
-                motor = 2;
-                break;
-              case 1:
-                motor = 3;
-                break;
-              case 2:
-                motor = 5;
-                break;
-              case 3:
-                motor = 6;
-                break;
-              case 4:
-                motor = 7;
-                break;
-              case 5:
-                motor = 8;
-                break;
-              default:
-                motor = 2;
-                break;
-            }
-            
-          }
-          else if(selection == 3){
-            
-            intensity = atol(content);
-          }
-          else if(selection == 1){
-            
-            startTime = atol(content);
-          }
-          else if(selection == 2){
-            
-            finalTime = atol(content);
-          }
-          selection++;
-          sizeParameter = 0;
+      }
+      
+      int space[4]; //Variable responsible for saving the position of each line space
+      int e_commercial[23]; //Variable responsible for saving the position of each "&" line
+      
+      int e = 0; //Variable responsible for counting the amount of "&" contained in the line.
+      
+      for(int i = 0, p = 0; i < line.length(); i++){ //Responsible tie to save the positions of spaces and "&", in their corresponding variables.
+      
+        if(line[i] == ' '){
           
-          for(restart=0; restart < 10; restart++) content[restart] = ' ';
-          
-        }else{
+          space[p] = i;
+          p++;
+        }else if(line[i] == '&'){
         
-          content[sizeParameter] = value;
-          sizeParameter++;
+          e_commercial[e] = i;
+          e++;
         }
       }
+      //The line variable must contain: motor(s), start time, final time, and intensity.
       
-      endTimeOfThePreviousEngine = startTime - endTimeOfThePreviousEngine;
-      
-      delay(endTimeOfThePreviousEngine);
-      
-      analogWrite(motor, intensity);//start the note
-      
-      delay(finalTime-startTime);
-      
-      analogWrite(motor, 0);//Finish the note
+      //If the counter of "&" equals 0, that is, the musical note only needs 1 motor, make ...
+      if(e == 0){
         
-      endTimeOfThePreviousEngine = finalTime;
+        endTimeOfThePreviousEngine = atol(line.substring(space[0],space[1]).c_str()) - endTimeOfThePreviousEngine;
+                                     //startTime - endTimeOfThePreviousEngine;
+                                     
+        delay(endTimeOfThePreviousEngine);
+        
+        //assigning the intensity to the desired engine
+        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+        tlc.write();
+        
+        delay(atol(line.substring(space[1],space[2]).c_str()) - atol(line.substring(space[0],space[1]).c_str()));
+                  //(finalTime - startTime)
+                  
+                  
+        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),0);
+                  //(motor,0);
+        tlc.write();
+        
+        endTimeOfThePreviousEngine = atol(line.substring(space[1],space[2]).c_str());
+                                    // = finalTime
+      
+    
+      }else{
+        
+        endTimeOfThePreviousEngine = atol(line.substring(space[0],space[1]).c_str()) - endTimeOfThePreviousEngine;
+                                     //startTime - endTimeOfThePreviousEngine;
+                                     
+        delay(endTimeOfThePreviousEngine);
+        
+        //assigning the intensity to the desired engine
+        for(int i = 0; i <= e; i++){
+          
+          //  For the first engine
+          if(i == 0) tlc.setPWM(atoi(line.substring(0,e_commercial[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+          
+          // For the engines before the last engine
+          else if ( i < e) tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1, e_commercial[i]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+          
+          //For the last engine
+          else tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1,space[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+        }
+        
+        tlc.write();
+        
+        delay(atol(line.substring(space[1],space[2]).c_str()) - atol(line.substring(space[0],space[1]).c_str()));
+                  //(finalTime - startTime)
+        
+        //assigning the intensity = 0 to the desired engine
+        for(int i = 0; i <= e; i++){
+          
+          if(i == 0) tlc.setPWM(atoi(line.substring(0,e_commercial[0]).c_str()),0);
+          
+          else if ( i < e) tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1, e_commercial[i]).c_str()),0);
+          
+          else tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1,space[0]).c_str()),0);
+        }
+        
+        tlc.write();
+        
+        endTimeOfThePreviousEngine = atol(line.substring(space[1],space[2]).c_str());
+                                    // = finalTime
+        
+      }
       
     }
     //close the music
