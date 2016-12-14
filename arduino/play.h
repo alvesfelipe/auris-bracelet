@@ -168,9 +168,8 @@ void startMusic(){
         }
         
         tlc.write();
-        
+         // endTimeOfThePreviousEngine = finalTime
         endTimeOfThePreviousEngine = atol(line.substring(space[1],space[2]).c_str());
-                                    // = finalTime
         
       }
       
