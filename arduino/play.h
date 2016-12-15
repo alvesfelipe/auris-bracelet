@@ -117,7 +117,7 @@ void startMusic(){
         delay(endTimeOfThePreviousEngine);
         
         //assigning the intensity to the desired engine
-        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);
         tlc.write();
         
         delay(atol(line.substring(space[1],space[2]).c_str()) - atol(line.substring(space[0],space[1]).c_str()));
@@ -143,13 +143,13 @@ void startMusic(){
         for(int i = 0; i <= e; i++){
           
           //  For the first engine
-          if(i == 0) tlc.setPWM(atoi(line.substring(0,e_commercial[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+          if(i == 0) tlc.setPWM(atoi(line.substring(0,e_commercial[0]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);
           
           // For the engines before the last engine
-          else if ( i < e) tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1, e_commercial[i]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+          else if ( i < e) tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1, e_commercial[i]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);
           
           //For the last engine
-          else tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1,space[0]).c_str()),atoi(line.substring(space[2]).c_str())*16);
+          else tlc.setPWM(atoi(line.substring(e_commercial[i-1]+1,space[0]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);
         }
         
         tlc.write();
