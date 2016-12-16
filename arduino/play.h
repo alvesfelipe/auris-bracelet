@@ -117,7 +117,7 @@ void startMusic(){
         delay(endTimeOfThePreviousEngine);
         
         //assigning the intensity to the desired engine
-        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);//nova propoção
+        tlc.setPWM(atoi(line.substring(0,space[0]).c_str()),(atoi(line.substring(space[2]).c_str())*13.9f)+550);
         tlc.write();
         
         delay(atol(line.substring(space[1],space[2]).c_str()) - atol(line.substring(space[0],space[1]).c_str()));
