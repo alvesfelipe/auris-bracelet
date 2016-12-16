@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SD.h>
+#include "Adafruit_TLC5947.h"
 
 #include "command.h"
 #include "salveFile.h"
@@ -40,14 +41,6 @@ void setup() {
     return;
   }
   Serial.println(F(" initialization done."));
-  
-  //These are the ports that is the engine of the bracelet
-  pinMode(2,OUTPUT);
-  pinMode(3,OUTPUT);
-  pinMode(5,OUTPUT);
-  pinMode(6,OUTPUT);
-  pinMode(7,OUTPUT);
-  pinMode(8,OUTPUT);
   
   cleaningCard();
 }
