@@ -35,6 +35,8 @@ void saving(EthernetClient *client){
   Serial.println("Nome da Musica salva com sucesso!");
   Serial.println("Pegando a melodia");
   
+  partMusic = client->read();
+  
   //until it find the stopping point, or the client is connected
   while(partMusic != '#'){
     
