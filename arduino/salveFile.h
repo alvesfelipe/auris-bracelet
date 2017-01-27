@@ -5,14 +5,26 @@
 
 //function responsible for saving music on the card.
 void saving(EthernetClient *client){
-
-  Serial.println("Creating File");
-  
   //erase the music
   cleaningCard(); 
   
+  
+  Serial.println("create the file!");
+  
+  char partMusic = client->read();
+  
+  String nomeMusica = "";
+  
+  while(partMusic != '#'){
+    
+    nomeMusica += partMusic;
+    partMusic = client->read();
+  }
+  
+  nomeMusica += ".txt";
+  
   //create the file that will store music
-  File file = SD.open("mus.txt",FILE_WRITE);
+  File file = SD.open(nomeMusica.c_str(),FILE_WRITE);
   
   if(!file){
     
@@ -20,9 +32,8 @@ void saving(EthernetClient *client){
     return;
   }
   
-  Serial.println("create the file!");
-  
-  char partMusic = client->read();
+  Serial.println("Nome da Musica salva com sucesso!");
+  Serial.println("Pegando a melodia");
   
   //until it find the stopping point, or the client is connected
   while(partMusic != '#'){
