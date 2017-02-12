@@ -2,40 +2,11 @@
 #define SALVEFILE_H_
 
 #include "erase.h"
-
 //function responsible for saving music on the card.
-void saving(EthernetClient *client){
-  //erase the music
-  cleaningCard(); 
-  
-  
-  Serial.println("create the file!");
+
+void saving(EthernetClient *client, File file){
   
   char partMusic = client->read();
-  
-  String nomeMusica = "";
-  
-  while(partMusic != '#'){
-    
-    nomeMusica += partMusic;
-    partMusic = client->read();
-  }
-  
-  nomeMusica += ".txt";
-  
-  //create the file that will store music
-  File file = SD.open(nomeMusica.c_str(),FILE_WRITE);
-  
-  if(!file){
-    
-    Serial.println("Could not create file");
-    return;
-  }
-  
-  Serial.println("Nome da Musica salva com sucesso!");
-  Serial.println("Pegando a melodia");
-  
-  partMusic = client->read();
   
   //until it find the stopping point, or the client is connected
   while(partMusic != '#'){

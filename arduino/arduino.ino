@@ -4,9 +4,6 @@
 #include "Adafruit_TLC5947.h"
 
 #include "command.h"
-#include "salveFile.h"
-#include "play.h"
-#include "erase.h"
 
 //address arduino's mac
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xD0, 0x93 };
@@ -14,6 +11,9 @@ byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xD0, 0x93 };
 void setup() {
   
   Serial.begin(9600);
+  
+  tlc.begin();
+  tlc.write();
   
   while(!Serial);
   
@@ -42,8 +42,10 @@ void setup() {
   }
   Serial.println(F(" initialization done."));
   
-  cleaningCard();
+  //cleaningCard();
 }
+
+//double tempo;
 
 void loop() {
   
@@ -52,7 +54,12 @@ void loop() {
   
   if(!client) return;
   
+  //tempo = millis();
+  
   Serial.println("client connects!");
-  readCommand(&client);  
+  readCommand(&client);
+
+  //tempo = millis() - tempo;
+  //Serial.println(tempo);  
 }
 
