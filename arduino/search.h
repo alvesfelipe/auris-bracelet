@@ -2,6 +2,7 @@
 #define _SEARCH_H_
 
 #include "salveFile.h"
+#include "carregar.h"
 
 String nome = "";
 
@@ -48,11 +49,14 @@ void search(EthernetClient *client){
     Serial.println("criou o arquivo");
     
     saving(client,file);
+    Serial.println("salvamento completo");
+    carregar(nome);
     
     return;
   }
   
   client->print("yes");
+  carregar(nome);
   Serial.println("File found successfully!");
   
 }
