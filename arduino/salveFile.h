@@ -1,7 +1,7 @@
 #ifndef SALVEFILE_H_
 #define SALVEFILE_H_
 
-#include "erase.h"
+//#include "erase.h"
 //function responsible for saving music on the card.
 
 void saving(EthernetClient *client, File file){
@@ -26,7 +26,7 @@ void saving(EthernetClient *client, File file){
  
   client->print("recebi");
   client->stop();
-  file.close();
+  //file.close();
   
 }
 #endif

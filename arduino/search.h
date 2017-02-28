@@ -23,36 +23,32 @@ void search(EthernetClient *client){
   
   Serial.println(nome.c_str());
   
-  char nome2[nome.length()-1];
-  
-  byte i = 0;
-  
-  while(i < nome.length()){
-    nome2[i] = nome[i];
-    i++;
-  }
-  nome2[i] = '\0';
-  
-  
-  if(!SD.exists(nome2)){
+  if(!SD.exists(&nome[0])){
     
     client->print("not");
     Serial.println("File not found!");
     
-    File file = SD.open(nome2,FILE_WRITE);
+    File file = SD.open(&nome[0],FILE_WRITE);
     
     if(!file){
       Serial.println("nao criou o arquivo");
       client->print("recebi");
+      return;
     }
+    
     Serial.println("criou o arquivo");
     
     saving(client,file);
+
+    file.close();
+    Serial.println("salvamento completo");
+    //carregar(nome);
     
     return;
   }
   
   client->print("yes");
+  //carregar(nome);
   Serial.println("File found successfully!");
   
 }

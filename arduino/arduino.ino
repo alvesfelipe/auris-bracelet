@@ -16,7 +16,8 @@ void setup() {
   tlc.write();
   
   while(!Serial);
-  
+
+  Serial.println("1-Conectando...");
   //Waiting until you get an ip
   if(Ethernet.begin(mac) == 0){
     
@@ -24,6 +25,8 @@ void setup() {
     
     while(true);
   }
+  
+  Serial.println("Conectado.");
   
   //start the server
   server.begin();
