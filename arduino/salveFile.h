@@ -26,7 +26,6 @@ void saving(EthernetClient *client, File file){
  
   client->print("recebi");
   client->stop();
-  //file.close();
   
 }
 #endif

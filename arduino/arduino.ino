@@ -12,12 +12,12 @@ void setup() {
   
   Serial.begin(9600);
   
-  tlc.begin();
+  tlc.begin(); //Start the engines with 0
   tlc.write();
   
   while(!Serial);
 
-  Serial.println("1-Conectando...");
+  Serial.println("Connecting...");
   //Waiting until you get an ip
   if(Ethernet.begin(mac) == 0){
     
@@ -26,7 +26,7 @@ void setup() {
     while(true);
   }
   
-  Serial.println("Conectado.");
+  Serial.println("connected.");
   
   //start the server
   server.begin();
@@ -44,11 +44,9 @@ void setup() {
     return;
   }
   Serial.println(F(" initialization done."));
+  SD.remove("musicaV.txt");
   
-  //cleaningCard();
 }
-
-//double tempo;
 
 void loop() {
   
@@ -56,13 +54,9 @@ void loop() {
   EthernetClient client = server.available();
   
   if(!client) return;
-  
-  //tempo = millis();
-  
+ 
   Serial.println("client connects!");
   readCommand(&client);
-
-  //tempo = millis() - tempo;
-  //Serial.println(tempo);  
+ 
 }
 
