@@ -26,18 +26,19 @@ void search(EthernetClient *client){
   //Check if this file already exists
   if(!SD.exists(&nome[0])){
     
-    client->print("not");
-    Serial.println("File not found!");
+    client->print("404");
+    Serial.println("404 - File not found!");
     
     File file = SD.open(&nome[0],FILE_WRITE);
     
     if(!file){
       Serial.println("Did not create the file");
-      client->print("recebi");
+      client->print("412");
       return;
     }
     
     Serial.println("criou o arquivo");
+    client->print("201");
     //If it does not, it will save the desired melody
     saving(client,file);
 

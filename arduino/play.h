@@ -17,7 +17,7 @@ Adafruit_TLC5947 tlc = Adafruit_TLC5947(NUM_TLC5947, CLOCK, DATA, LATCH);
 EthernetServer server(3300);
 
 //function responsible for playing the music on the bracelet
-void startMusic(){
+void startMusic(EthernetClient *client){
   
   double tempo_real = millis();
 
@@ -25,8 +25,12 @@ void startMusic(){
   
   if(!file){
     Serial.println("Did not upload the song");
+    client->print("404");
     return;
   }
+  client->print("200");
+  //disconnect the client Arduino
+  client->stop();        
   
   char value; //Variable that will save a byte of the melody
   

@@ -27,19 +27,19 @@ void readCommand(EthernetClient *client){
         
         if(command == "start"){ //To start the chosen melody
           
-          //disconnect the client Arduino
-          client->stop();
-          startMusic();
+          startMusic(client);
           
         }else if(command == "searc"){//Command that will search the melody, and leave ready for the start
           
           Serial.println("Search");
+          client->print("200");
           search(client);        
         }
         
         else{
           
           Serial.println("Unrecognized command!");
+          client->print("501");
         }
         
         Serial.println("disconnecting the client!");
