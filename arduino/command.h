@@ -3,13 +3,14 @@
 
 #include "play.h"
 #include "salveFile.h"
+#include "search.h"
 
 //function that will read the command sent by the client
 void readCommand(EthernetClient *client){
   
   //complete command
   String command;
-  int commandSize = 0;
+  byte commandSize = 0;
   
   while(client->connected()){
     
@@ -24,20 +25,21 @@ void readCommand(EthernetClient *client){
       
       if(commandSize == 5){
         
-        if(command == "write"){
+        if(command == "start"){ //To start the chosen melody
           
-          //notice to you that I accepted the command
-          client->println("command accepted");
-          saving(client);
+          startMusic(client);
           
-        }else if(command == "start"){
+        }else if(command == "searc"){//Command that will search the melody, and leave ready for the start
           
-          //disconnect the client Arduino
-          client->stop();
-          startMusic();
-        }else{
+          Serial.println("Search");
+          client->print("200");
+          search(client);        
+        }
+        
+        else{
           
           Serial.println("Unrecognized command!");
+          client->print("501");
         }
         
         Serial.println("disconnecting the client!");

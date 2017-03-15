@@ -1,26 +1,10 @@
 #ifndef SALVEFILE_H_
 #define SALVEFILE_H_
 
-#include "erase.h"
-
+//#include "erase.h"
 //function responsible for saving music on the card.
-void saving(EthernetClient *client){
 
-  Serial.println("Creating File");
-  
-  //erase the music
-  cleaningCard(); 
-  
-  //create the file that will store music
-  File file = SD.open("mus.txt",FILE_WRITE);
-  
-  if(!file){
-    
-    Serial.println("Could not create file");
-    return;
-  }
-  
-  Serial.println("create the file!");
+void saving(EthernetClient *client, File file){
   
   char partMusic = client->read();
   
@@ -40,9 +24,8 @@ void saving(EthernetClient *client){
       
   }
  
-  client->print("recebi");
+  client->print("201");
   client->stop();
-  file.close();
   
 }
 #endif

@@ -4,9 +4,6 @@
 #include "Adafruit_TLC5947.h"
 
 #include "command.h"
-#include "salveFile.h"
-#include "play.h"
-#include "erase.h"
 
 //address arduino's mac
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x0E, 0xD0, 0x93 };
@@ -15,8 +12,12 @@ void setup() {
   
   Serial.begin(9600);
   
-  while(!Serial);
+  tlc.begin(); //Start the engines with 0
+  tlc.write();
   
+  while(!Serial);
+
+  Serial.println("Connecting...");
   //Waiting until you get an ip
   if(Ethernet.begin(mac) == 0){
     
@@ -24,6 +25,8 @@ void setup() {
     
     while(true);
   }
+  
+  Serial.println("connected.");
   
   //start the server
   server.begin();
@@ -41,8 +44,8 @@ void setup() {
     return;
   }
   Serial.println(F(" initialization done."));
+  SD.remove("musicaV.txt");
   
-  cleaningCard();
 }
 
 void loop() {
@@ -51,8 +54,9 @@ void loop() {
   EthernetClient client = server.available();
   
   if(!client) return;
-  
+ 
   Serial.println("client connects!");
-  readCommand(&client);  
+  readCommand(&client);
+ 
 }
 
