@@ -176,8 +176,6 @@ void startMusic(EthernetClient *client){
   tempo_real = millis() - tempo_real;
   Serial.print("tempo: ");
   Serial.println(tempo_real);
-  SD.remove("musicaV.txt");
-  Serial.println("Apagou a lista de comandos salvos");
 }
 
 #endif
