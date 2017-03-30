@@ -44,7 +44,6 @@ void setup() {
     return;
   }
   Serial.println(F(" initialization done."));
-  SD.remove("musicaV.txt");
   
 }
 

@@ -48,7 +48,7 @@ void search(EthernetClient *client){
     return;
   }
   
-  client->print("yes");
+  client->print("200");
   Serial.println("File found successfully!");
 }
 

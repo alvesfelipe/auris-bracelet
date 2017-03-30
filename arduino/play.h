@@ -30,11 +30,50 @@ void startMusic(EthernetClient *client){
   }
   client->print("200");
   //disconnect the client Arduino
-  client->stop();        
+  client->stop();       
+
+  Serial.println("Iniciou o start");
   
   char value; //Variable that will save a byte of the melody
   
   while(file.available()){
+
+    //if the client connect, while the music is playing
+      EthernetClient client_stop = server.available();
+      
+      if(client_stop){
+        
+        int commandSize = 0;
+        String command;
+        char partCommand;
+        while(client_stop.available()){
+          
+          commandSize++;
+          partCommand = client_stop.read();
+          command += partCommand;
+          
+          if(commandSize == 4){
+            
+            //verify that the received command is the command to stop the music
+            if(command == "stop"){
+              
+              while(file.available()) file.read();
+              //close the music
+              file.close();
+              client_stop.print("200");
+              //disconnect the customer
+              client_stop.stop();
+              //and finalize the function of playing music
+              return;
+            }
+            else{
+              Serial.println("Unrecognized command!");
+              client_stop.print("501");
+            }
+          }
+        
+        }
+      }
 
     //Variable responsible for saving one line of the melody at a time
     String line = "";
@@ -137,8 +176,6 @@ void startMusic(EthernetClient *client){
   tempo_real = millis() - tempo_real;
   Serial.print("tempo: ");
   Serial.println(tempo_real);
-  SD.remove("musicaV.txt");
-  Serial.println("Apagou a lista de comandos salvos");
 }
 
 #endif
